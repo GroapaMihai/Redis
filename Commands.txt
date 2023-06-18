@@ -1,0 +1,484 @@
+---------- STRINGS ----------
+
+1. List all stored keys:
+	- keys *
+
+	127.0.0.1:6379> keys *
+	1) "name"
+
+2. Set value for a key:
+	- set key value
+
+	127.0.0.1:6379> set name2 tom
+	OK
+
+3. Get value of a key:
+	- get key
+
+	127.0.0.1:6379> get name2
+	"tom"
+
+4. Delete a key-value pair:
+	- del key
+
+	127.0.0.1:6379> del name2
+	(integer) 1
+
+5. Delete all keys:
+	- flushall
+
+	127.0.0.1:6379> flushall
+	OK
+	127.0.0.1:6379> keys *
+	(empty list or set)
+
+6. Set expiration for a key (after that the key is flushed):
+	- setex key seconds value
+
+	127.0.0.1:6379> setex name 10 max
+	OK
+
+7. Set a value for a key if the key is not present, otherwise ignore the change (insert a key).
+	- setnx key value
+
+	127.0.0.1:6379> set name "Bobby Zamora"
+	OK
+	127.0.0.1:6379> setnx name "Ronaldinho" -- 'name' key exists, change will be ignored
+	(integer) 0
+	127.0.0.1:6379> get name
+	"Bobby Zamora"
+	127.0.0.1:6379> setnx name2 "Ronaldinho" -- 'name2' key doesn't exist, it will be inserted
+	(integer) 1
+
+8. Get the value length of a given key:
+	- strlen key
+
+	127.0.0.1:6379> strlen name2 -- 'name2' is 'Ronaldinho'
+	(integer) 10
+
+7. Set multiple keys at once:
+	- mset key1 value1 [key2 value2 ... keyn valuen]
+
+	127.0.0.1:6379> mset num1 50 num2 60 num3 70
+	OK
+	127.0.0.1:6379> keys *
+	1) "name"
+	2) "num1" -- inserted through mset
+	3) "num2" -- inserted through mset
+	4) "num3" -- inserted through mset
+	5) "name2"
+
+8. Decrement a value for a given key:
+	- decr key
+
+	127.0.0.1:6379> get num1
+	"50"
+	127.0.0.1:6379> decr num1
+	(integer) 49
+	127.0.0.1:6379> get num1
+	"49"
+
+9. Increment a value for a given key:
+	- incr key
+
+	127.0.0.1:6379> get num1
+	"49"
+	127.0.0.1:6379> incr num1
+	(integer) 50
+	127.0.0.1:6379> get num1
+	"50"
+
+10. Decrement a value by a provided argument for a given key:
+	- decrby key decrement
+
+	127.0.0.1:6379> get num1
+	"55"
+	127.0.0.1:6379> decrby num1 5
+	(integer) 50
+	127.0.0.1:6379> get num1
+	"50"
+
+11. Increment a value by a provided argument for a given key:
+	- incrby key increment
+
+	127.0.0.1:6379> get num1
+	"50"
+	127.0.0.1:6379> incrby num1 5
+	(integer) 55
+	127.0.0.1:6379> get num1
+	"55"
+
+12. Append a suffix for a key:
+	- append key suffix
+
+	127.0.0.1:6379> set mykey hello
+	OK
+	127.0.0.1:6379> get mykey
+	"hello"
+	127.0.0.1:6379> append mykey " world"
+	(integer) 11
+	127.0.0.1:6379> get mykey
+	"hello world"
+
+---------- HASHES ----------
+
+13. Storing an object (as a hash):
+	- hmset key field1 value1 [field2 value2 ... fieldn valuen]
+
+	127.0.0.1:6379> hmset stu-1 name max age 15 class 8
+	OK
+
+14. Retrieveing a field value of a hash object:
+	- hget key field
+
+	127.0.0.1:6379> hget stu-1 name
+	"max"
+
+15. Retrieving all fields of a hash object:
+	- hgetall key
+
+	127.0.0.1:6379> hgetall stu-1
+	1) "name"
+	2) "max"
+	3) "age"
+	4) "15"
+	5) "class"
+	6) "8"
+
+16. Check if a field exists on a hash object:
+	- hexists key field
+
+	127.0.0.1:6379> hexists stu-1 surname -- this doesn't exist
+	(integer) 0
+	127.0.0.1:6379> hexists stu-1 name    -- this field exists
+	(integer) 1
+
+17. Deleting a field of a hash object:
+	- hdel key field
+
+	127.0.0.1:6379> hdel stu-1 class
+	(integer) 1
+	127.0.0.1:6379> hgetall stu-1
+	1) "name"
+	2) "max"
+	3) "age"
+	4) "15"
+
+18. Set a field of a hash object only if the field is not present, otherwise ignore the change.
+	- hsetnx key field value
+
+	127.0.0.1:6379> hsetnx stu-1 name tom      -- stu-1 has name 'max' so the command fails
+	(integer) 0
+	127.0.0.1:6379> hsetnx stu-1 surname zelda -- surname field doesn't exists, it will be created
+	(integer) 1
+	127.0.0.1:6379> hgetall stu-1
+	1) "name"
+	2) "max"
+	3) "age"
+	4) "15"
+	5) "surname"
+	6) "zelda"
+
+19. Increment a hash object field by a given value (same for decrement):
+	- hincrby key field value
+
+	127.0.0.1:6379> hincrby stu-1 age 2
+	(integer) 17
+	127.0.0.1:6379> hgetall stu-1
+	1) "name"
+	2) "max"
+	3) "age"
+	4) "17"
+	5) "surname"
+	6) "zelda"
+
+20. Get all the fields of a hash object:
+	- hkeys key
+
+	127.0.0.1:6379> hkeys stu-1
+	1) "name"
+	2) "age"
+	3) "surname"
+
+21. Get all field values of a hash object:
+	- hvals key
+
+	127.0.0.1:6379> hvals stu-1
+	1) "max"
+	2) "17"
+	3) "zelda"
+
+22. Get number of fields of a hash object:
+	- hlen key
+
+	127.0.0.1:6379> hlen stu-1
+	(integer) 3
+
+---------- LISTS ----------
+
+23. Creating a list:
+	- lpush key value1 [value2 ... valuen]
+
+	127.0.0.1:6379> lpush num 1 2 3 4
+	(integer) 4
+
+24. See the list content:
+	- lrange key start stop
+	(stop can be specified as -1 if you don't know the length and you want all elements)
+
+	127.0.0.1:6379> lrange num 0 10
+	1) "4"
+	2) "3"
+	3) "2"
+	4) "1"
+
+25. Remove the HEAD/left most/0 element
+	- lpop key
+
+	127.0.0.1:6379> lpop num -- this will pop 5
+	"5"
+	127.0.0.1:6379> lrange num 0 10
+	1) "4"
+	2) "3"
+	3) "2"
+	4) "1"
+
+26. Push an element at the BOTTOM/right most
+	- rpush key value
+
+	127.0.0.1:6379> rpush num 5
+	(integer) 5
+	127.0.0.1:6379> lrange num 0 10
+	1) "4"
+	2) "3"
+	3) "2"
+	4) "1"
+	5) "5"
+
+27. Remove the BOTTOM/right most/last element
+	- rpop key
+
+	127.0.0.1:6379> rpop num
+	"5"
+	127.0.0.1:6379> lrange num 0 10
+	1) "4"
+	2) "3"
+	3) "2"
+	4) "1"
+
+28. Length of the list:
+	- llen key
+
+	127.0.0.1:6379> llen num
+	(integer) 4
+
+29. Get value of element by index:
+	- lindex key index
+
+	127.0.0.1:6379> lindex num 2
+	"2"
+
+30. Set value of an element by index:
+	- lset key index value
+
+	127.0.0.1:6379> lset num 2 20 -- set value 20 at position 2
+	OK
+	127.0.0.1:6379> lrange num 0 10
+	1) "4"
+	2) "3"
+	3) "20"
+	4) "1"
+
+31. Push an element to a list only if the list exists:
+	- lpushx key value
+
+	127.0.0.1:6379> lrange num 0 -1
+	1) "4"
+	2) "3"
+	3) "20"
+	4) "1"
+	127.0.0.1:6379> lpushx num 0
+	(integer) 5
+	127.0.0.1:6379> lrange num 0 -1
+	1) "0"
+	2) "4"
+	3) "3"
+	4) "20"
+	5) "1"
+	127.0.0.1:6379> lpushx missing 1 -- this list doesn't exist and won't be created
+	(integer) 0
+
+32. Insert an element Before/After a pivot (another element)
+	- linsert key before/after pivot value
+
+	127.0.0.1:6379> lrange num 0 -1
+	1) "0"
+	2) "4"
+	3) "3"
+	4) "20"
+	5) "1"
+	127.0.0.1:6379> linsert num before 20 1001
+	(integer) 6
+	127.0.0.1:6379> lrange num 0 -1
+	1) "0"
+	2) "4"
+	3) "3"
+	4) "1001"
+	5) "20"
+	6) "1"
+
+---------- SETS ----------
+
+33. Creating a set:
+	- sadd key value1 [value2 ... valuen]
+
+	127.0.0.1:6379> sadd myset1 1 2 3 4
+	(integer) 4
+
+34. See the contents of a set:
+	- smembers key
+
+	127.0.0.1:6379> smembers myset1
+	1) "1"
+	2) "2"
+	3) "3"
+	4) "4"
+
+35. Length of the set:
+	- scard key
+
+	127.0.0.1:6379> scard myset1
+	(integer) 4
+
+36. Difference of sets (elements that exist in first set and are not present in the others):
+	- sdiff key1 key2 [key3 ... keyn]
+
+	127.0.0.1:6379> smembers myset1
+	1) "1"
+	2) "2"
+	3) "3"
+	4) "4"
+	127.0.0.1:6379> smembers myset2
+	1) "4"
+	2) "5"
+	3) "6"
+	4) "7"
+	5) "8"
+	6) "9"
+	127.0.0.1:6379> sdiff myset1 myset2
+	1) "1"
+	2) "2"
+	3) "3"
+
+37. Store the difference of sets in a resulting set
+	- sdiffstore resultsetkey key1 key2 [key3 ... keyn]
+
+	127.0.0.1:6379> sdiffstore myset3 myset1 myset2
+	(integer) 3
+	127.0.0.1:6379> smembers myset3
+	1) "1"
+	2) "2"
+	3) "3"
+
+38. Union of sets
+	- sunion key1 key2 [key3 ... keyn]
+
+	127.0.0.1:6379> sunion myset1 myset2
+	1) "1"
+	2) "2"
+	3) "3"
+	4) "4"
+	5) "5"
+	6) "6"
+	7) "7"
+	8) "8"
+	9) "9"
+
+39. Store the union of sets in a resulting set
+	- sunionstore resultsetkey key1 key2 [key3 ... keyn]
+
+	127.0.0.1:6379> sunionstore myset4 myset1 myset2
+	(integer) 9
+	127.0.0.1:6379> smembers myset4
+	1) "1"
+	2) "2"
+	3) "3"
+	4) "4"
+	5) "5"
+	6) "6"
+	7) "7"
+	8) "8"
+	9) "9"
+
+40. Removing a value from a set
+	- srem key value1 [value2 ... valuen]
+
+	127.0.0.1:6379> srem myset4 9
+	(integer) 1
+	127.0.0.1:6379> smembers myset4
+	1) "1"
+	2) "2"
+	3) "3"
+	4) "4"
+	5) "5"
+	6) "6"
+	7) "7"
+	8) "8"
+
+41. Remove random values from a set
+	- spop key [count]
+
+	127.0.0.1:6379> spop myset4 2 -- remove 2 random values
+	1) "5"
+	2) "6"
+	127.0.0.1:6379> smembers myset4
+	1) "1"
+	2) "2"
+	3) "3"
+	4) "4"
+	5) "7"
+	6) "8"
+
+42. Intersection of sets (common elements)
+	- sinter key1 key2 [key3 ... keyn]
+
+	127.0.0.1:6379> smembers myset1
+	1) "1"
+	2) "2"
+	3) "3"
+	4) "4"
+	127.0.0.1:6379> smembers myset2
+	1) "4"
+	2) "5"
+	3) "6"
+	4) "7"
+	5) "8"
+	6) "9"
+	127.0.0.1:6379> sinter myset1 myset2
+	1) "4"
+
+43. Store the intersection of sets
+	- sinterstore resultsetkey key1 key2 [key3 ... keyn]
+
+	127.0.0.1:6379> sinterstore myset5 myset1 myset2
+	(integer) 1
+	127.0.0.1:6379> smembers myset5
+	1) "4"
+
+44. Move an element from a source set to a destination set
+	- smove source destionation member
+
+	127.0.0.1:6379> smove myset1 myset2 1
+	(integer) 1
+	127.0.0.1:6379> smembers myset1
+	1) "2"
+	2) "3"
+	3) "4"
+	127.0.0.1:6379> smembers myset2
+	1) "1"
+	2) "4"
+	3) "5"
+	4) "6"
+	5) "7"
+	6) "8"
+	7) "9"
