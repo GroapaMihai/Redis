@@ -40,6 +40,9 @@ public class ProductController {
     public ResponseEntity<ProductResponse> create(@Valid @RequestBody CreateProductDto createProductDto) {
         Product product = productService.create(createProductDto);
 
+        // add this line after the creation, update or deletion of a product to invalidate previously cached result
+        cacheDataRepository.deleteById("allProducts");
+
         return ResponseEntity.ok(new ProductResponse(product));
     }
 
